@@ -1,7 +1,8 @@
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
-import java.awt.event.*;
 import java.time.LocalDate;
 
 public class FinanceTrackerGUI {
@@ -9,48 +10,72 @@ public class FinanceTrackerGUI {
     private JFrame frame;
     private JTable table;
     private DefaultTableModel tableModel;
-    private JLabel balanceLabel;
-    private JLabel goalLabel;
-    private JLabel progressLabel;
+    private JLabel balanceLabel, goalLabel, progressLabel;
 
     public FinanceTrackerGUI() {
+        // ✅ Use native OS Look & Feel for modern look
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
         account = new Account();
 
         frame = new JFrame("💸 Personal Finance Tracker");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(700, 500);
+        frame.setSize(800, 600);
+        frame.setLayout(new BorderLayout(10, 10)); // Padding between sections
 
-        // Table to show transactions
+        // ✅ Table model and table setup
         tableModel = new DefaultTableModel(new Object[]{"Date", "Description", "Amount", "Category", "Emoji"}, 0);
         table = new JTable(tableModel);
+        table.setRowHeight(28);
 
-        JScrollPane tableScroll = new JScrollPane(table);
+        // ✅ Use emoji-safe font for table
+        table.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
 
-        // Add Transaction Button
-        JButton addButton = new JButton("Add Transaction");
-        addButton.addActionListener(e -> addTransaction());
+        JTableHeader header = table.getTableHeader();
+        header.setBackground(new Color(200, 200, 255));
+        header.setFont(new Font("Segoe UI Emoji", Font.BOLD, 14));
 
-        // Set Savings Goal Button
-        JButton setGoalButton = new JButton("Set Savings Goal");
-        setGoalButton.addActionListener(e -> setSavingsGoal());
+        JScrollPane scrollPane = new JScrollPane(table);
 
-        // Balance labels
+        // ✅ Stats labels with nice fonts
         balanceLabel = new JLabel("Balance: $0.00");
+        balanceLabel.setFont(new Font("Arial", Font.BOLD, 16));
+
         goalLabel = new JLabel("Savings Goal: $0.00");
+        goalLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+
         progressLabel = new JLabel("Progress: 0%");
+        progressLabel.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        JPanel panel = new JPanel();
-        panel.add(addButton);
-        panel.add(setGoalButton);
-
-        JPanel statsPanel = new JPanel(new GridLayout(3, 1));
+        JPanel statsPanel = new JPanel(new GridLayout(3, 1, 5, 5));
+        statsPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(Color.GRAY), "Your Stats",
+                TitledBorder.LEFT, TitledBorder.TOP));
         statsPanel.add(balanceLabel);
         statsPanel.add(goalLabel);
         statsPanel.add(progressLabel);
 
-        frame.getContentPane().add(tableScroll, BorderLayout.CENTER);
-        frame.getContentPane().add(panel, BorderLayout.SOUTH);
+        // ✅ Buttons with emoji text
+        JButton addButton = new JButton("➕ Add Transaction");
+        addButton.setFont(new Font("Arial", Font.BOLD, 12));
+        addButton.addActionListener(e -> addTransaction());
+
+        JButton setGoalButton = new JButton("🎯 Set Savings Goal");
+        setGoalButton.setFont(new Font("Arial", Font.BOLD, 12));
+        setGoalButton.addActionListener(e -> setSavingsGoal());
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(addButton);
+        buttonPanel.add(setGoalButton);
+
+        // ✅ Add everything to the frame
         frame.getContentPane().add(statsPanel, BorderLayout.NORTH);
+        frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
+        frame.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
         frame.setVisible(true);
     }
@@ -58,34 +83,46 @@ public class FinanceTrackerGUI {
     private void addTransaction() {
         JTextField descField = new JTextField();
         JTextField amountField = new JTextField();
-        JTextField categoryField = new JTextField();
-        JTextField emojiField = new JTextField();
+        String[] categories = {"Income", "Expense"};
+        JComboBox<String> categoryBox = new JComboBox<>(categories);
 
-        Object[] message = {
-                "Description:", descField,
-                "Amount (+income, -expense):", amountField,
-                "Category:", categoryField,
-                "Emoji:", emojiField
-        };
+        // ✅ Use emojis only (not emoji + text)
+        String[] emojis = {"🛒", "🍔", "💡", "💼", "💰"};
+        JComboBox<String> emojiBox = new JComboBox<>(emojis);
 
-        int option = JOptionPane.showConfirmDialog(frame, message, "Add Transaction", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
+        JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panel.add(new JLabel("Description:"));
+        panel.add(descField);
+        panel.add(new JLabel("Amount:"));
+        panel.add(amountField);
+        panel.add(new JLabel("Category:"));
+        panel.add(categoryBox);
+        panel.add(new JLabel("Emoji:"));
+        panel.add(emojiBox);
+
+        int result = JOptionPane.showConfirmDialog(frame, panel, "➕ Add Transaction",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
             try {
                 String desc = descField.getText();
                 double amount = Double.parseDouble(amountField.getText());
-                String category = categoryField.getText();
-                String emoji = emojiField.getText();
+                String category = (String) categoryBox.getSelectedItem();
+                String emoji = (String) emojiBox.getSelectedItem();
+
+                if ("Expense".equals(category) && amount > 0) {
+                    amount *= -1;
+                }
 
                 Transaction t = new Transaction(desc, amount, LocalDate.now(), category, emoji);
                 account.addTransaction(t);
-
                 tableModel.addRow(new Object[]{t.getDate(), desc, amount, category, emoji});
 
                 checkUnusualExpense(t);
                 updateStats();
-
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(frame, "Invalid amount entered!", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "⚠️ Invalid amount!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -98,7 +135,7 @@ public class FinanceTrackerGUI {
                 account.setSavingsGoal(goal);
                 updateStats();
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(frame, "Invalid goal amount!", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "⚠️ Invalid goal!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -106,7 +143,7 @@ public class FinanceTrackerGUI {
     private void checkUnusualExpense(Transaction t) {
         double incomeTotal = account.getIncomeTotal();
         if (incomeTotal > 0 && Math.abs(t.getAmount()) > incomeTotal * 0.3 && t.getAmount() < 0) {
-            JOptionPane.showMessageDialog(frame, "⚠️ Warning: This expense is more than 30% of your total income!");
+            JOptionPane.showMessageDialog(frame, "⚠️ Warning: This expense is more than 30% of total income!");
         }
     }
 
@@ -114,11 +151,16 @@ public class FinanceTrackerGUI {
         double balance = account.getBalance();
         double goal = account.getSavingsGoal();
         double progress = account.getMonthlySavingsProgress();
+        double incomeTotal = account.getIncomeTotal();
 
         balanceLabel.setText(String.format("Balance: $%.2f", balance));
         goalLabel.setText(String.format("Savings Goal: $%.2f", goal));
-        if (goal > 0) {
+
+        if (incomeTotal <= 0) {
+            progressLabel.setText("Progress: 0%");
+        } else if (goal > 0) {
             double percent = (progress / goal) * 100;
+            if (percent < 0) percent = 0;
             progressLabel.setText(String.format("Progress: %.2f%%", percent));
         } else {
             progressLabel.setText("Progress: 0%");
@@ -126,6 +168,6 @@ public class FinanceTrackerGUI {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new FinanceTrackerGUI());
+        SwingUtilities.invokeLater(FinanceTrackerGUI::new);
     }
 }

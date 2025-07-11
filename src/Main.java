@@ -68,7 +68,10 @@ public class Main {
                         System.out.println("✅ Transaction added!");
 
                         // Check for unusual expense
-                        account.checkUnusualExpense(t);
+                        double incomeTotal = account.getIncomeTotal();
+                        if (incomeTotal > 0 && Math.abs(amount) > incomeTotal * 0.3 && amount < 0) {
+                            System.out.println("⚠️ Warning: This expense is more than 30% of your total income!");
+                        }
 
                         break;
 
@@ -87,11 +90,20 @@ public class Main {
                         double balance = account.getBalance();
                         double saved = account.getMonthlySavingsProgress();
                         double goal = account.getSavingsGoal();
+                        double income = account.getIncomeTotal();
+
                         System.out.printf("Current balance: $%.2f\n", balance);
                         System.out.printf("This month's savings progress: $%.2f / $%.2f\n", saved, goal);
-                        if (goal > 0) {
+
+                        if (income <= 0) {
+                            System.out.println("⚠️ You haven't added any income yet! Your savings progress may be inaccurate.");
+                            System.out.println("Progress: 0%");
+                        } else if (goal > 0) {
                             double percent = (saved / goal) * 100;
+                            if (percent < 0) percent = 0;
                             System.out.printf("Progress: %.2f%%\n", percent);
+                        } else {
+                            System.out.println("Progress: 0%");
                         }
                         break;
 

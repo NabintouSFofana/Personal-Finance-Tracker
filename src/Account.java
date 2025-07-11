@@ -14,6 +14,10 @@ public class Account {
         transactions.add(t);
     }
 
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
     public double getBalance() {
         double balance = 0.0;
         for (Transaction t : transactions) {
@@ -22,24 +26,10 @@ public class Account {
         return balance;
     }
 
-    public List<Transaction> getTransactions() {
-        return transactions;
-    }
-
-    public void setSavingsGoal(double goal) {
-        this.savingsGoal = goal;
-    }
-
-    public double getSavingsGoal() {
-        return this.savingsGoal;
-    }
-
     public double getIncomeTotal() {
         double total = 0.0;
         for (Transaction t : transactions) {
-            if (t.getAmount() > 0) {
-                total += t.getAmount();
-            }
+            if (t.getAmount() > 0) total += t.getAmount();
         }
         return total;
     }
@@ -47,22 +37,20 @@ public class Account {
     public double getExpenseTotal() {
         double total = 0.0;
         for (Transaction t : transactions) {
-            if (t.getAmount() < 0) {
-                total += t.getAmount(); // will be negative
-            }
+            if (t.getAmount() < 0) total += t.getAmount();
         }
         return total;
     }
 
     public double getMonthlySavingsProgress() {
-        double netSavings = getIncomeTotal() + getExpenseTotal(); // expenses are negative
-        return netSavings;
+        return getIncomeTotal() + getExpenseTotal();
     }
 
-    public void checkUnusualExpense(Transaction t) {
-        double incomeTotal = getIncomeTotal();
-        if (incomeTotal > 0 && Math.abs(t.getAmount()) > incomeTotal * 0.3 && t.getAmount() < 0) {
-            System.out.println("⚠️ Warning: This expense is more than 30% of your total income!");
-        }
+    public void setSavingsGoal(double goal) {
+        this.savingsGoal = goal;
+    }
+
+    public double getSavingsGoal() {
+        return savingsGoal;
     }
 }

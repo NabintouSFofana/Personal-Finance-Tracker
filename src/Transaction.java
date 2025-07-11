@@ -15,28 +15,14 @@ public class Transaction {
         this.emoji = emoji;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public String getEmoji() {
-        return emoji;
-    }
+    public String getDescription() { return description; }
+    public double getAmount() { return amount; }
+    public LocalDate getDate() { return date; }
+    public String getCategory() { return category; }
+    public String getEmoji() { return emoji; }
 
     @Override
     public String toString() {
-        return "[" + date + "] " + category + " " + emoji + ": " + description + " - $" + amount;
+        return "[" + date + "] " + category + ": " + description + " " + emoji + " $" + amount;
     }
 }
