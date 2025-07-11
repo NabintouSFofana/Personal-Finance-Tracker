@@ -58,14 +58,14 @@ java FinanceTrackerGUI
 
 ## 📷 Screenshots
 
-<img width="867" height="678" alt="personal-finance-tracker" src="https://github.com/user-attachments/assets/954ef83f-e792-41da-91cc-378776f2e391" />
+<img width="867" height="678" alt="personal-finance-tracker" src="https://github.com/user-attachments/assets/bf8902a4-ec3e-46f9-b169-cc5fd4cd35d9" />
 
 
 ### 🗂️ Main Dashboard
 
 View transactions, set your savings goal, and see your progress!
 
-<img width="992" height="742" alt="image" src="https://github.com/user-attachments/assets/65195346-497e-41e4-b3ee-37086555e07d" />
+<img width="992" height="742" alt="personal-finance-tracker2" src="https://github.com/user-attachments/assets/18663481-dde1-4dc6-9d54-de1d0e24e30a" />
 
 ---
 
