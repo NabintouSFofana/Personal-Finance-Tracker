@@ -72,7 +72,7 @@ View transactions, set your savings goal, and see your progress!
 ## 👩🏽‍💻 Author
 
 **Nabintou S. Fofana** — Software Engineering Student  
-🌐 [Portfolio](https://nabintousfofana.github.io/portfolio_website/)  
+🌐 [Portfolio](https://nabintousfofana.github.io/my_portfolio/)  
 🔗 (https://www.linkedin.com/in/nabintousfofana/)
 
 ---
