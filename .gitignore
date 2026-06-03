@@ -1,0 +1,76 @@
+# ─── Compiled Java output ────────────────────────────────────────────
+# These are regenerated every time you compile — don't ship them
+*.class
+bin/
+out/
+target/
+build/
+
+# ─── Maven / Gradle (in case I add either later) ─────────────────────
+.gradle/
+.mvn/
+mvnw
+mvnw.cmd
+
+# ─── FlatLaf jar location ────────────────────────────────────────────
+# I tell people to download the FlatLaf jar themselves and put it in
+# lib/ — see the README. The jar is too big to ship in the repo and
+# they should grab the latest version anyway.
+lib/*.jar
+
+# ─── IDE / editor files ──────────────────────────────────────────────
+# IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# NetBeans
+nbproject/private/
+nbbuild/
+nbdist/
+
+# VS Code
+.vscode/
+
+# Other editors
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# ─── OS junk ─────────────────────────────────────────────────────────
+# macOS
+.DS_Store
+.AppleDouble
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ─── Logs and temp ───────────────────────────────────────────────────
+*.log
+*.tmp
+*.bak
+*.cache
+hs_err_pid*.log
+
+# ─── Local-only experiments ──────────────────────────────────────────
+_draft*
+_scratch*
+_local*
+
+# ─── Anything sensitive ──────────────────────────────────────────────
+.env
+.env.local
+secrets.json
